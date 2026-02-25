@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Crypto WebView</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .glass-card {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 30px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+        p {
+            color: #94a3b8;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+            text-decoration: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(59,130,246,0.5);
+        }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(2,1fr);
+            gap: 15px;
+            margin: 30px 0;
+        }
+        .feature {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        .feature:hover {
+            background: rgba(255,255,255,0.08);
+            transform: scale(1.05);
+        }
+        .feature span {
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .feature p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #cbd5e1;
+        }
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #64748b;
+            font-size: 0.8rem;
+        }
+        .price-ticker {
+            background: rgba(0,0,0,0.3);
+            border-radius: 20px;
+            padding: 15px;
+            margin: 20px 0;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .coin-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .coin-row:last-child {
+            border-bottom: none;
+        }
+        .coin-name {
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+        .coin-price {
+            color: #94a3b8;
+        }
+        .coin-change {
+            font-weight: 500;
+        }
+        .positive {
+            color: #10b981;
+        }
+        .negative {
+            color: #ef4444;
+        }
+        .glow {
+            animation: glow 2s ease-in-out infinite;
+        }
+        @keyframes glow {
+            0% { box-shadow: 0 0 5px rgba(59,130,246,0.2); }
+            50% { box-shadow: 0 0 20px rgba(59,130,246,0.4); }
+            100% { box-shadow: 0 0 5px rgba(59,130,246,0.2); }
+        }
+        @media (max-width: 480px) {
+            .glass-card { padding: 25px; }
+            h1 { font-size: 2rem; }
+            .features { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="glass-card glow">
+        <h1>🚀 Premium Crypto</h1>
+        <p>Experience the ultimate crypto dashboard with real-time updates, beautiful charts, and seamless integration with our Telegram bot.</p>
+        
+        <div class="price-ticker">
+            <div class="coin-row">
+                <span class="coin-name">BTC</span>
+                <span class="coin-price">$64,165</span>
+                <span class="coin-change positive">▲0.87%</span>
+            </div>
+            <div class="coin-row">
+                <span class="coin-name">ETH</span>
+                <span class="coin-price">$1,850</span>
+                <span class="coin-change negative">▼0.55%</span>
+            </div>
+            <div class="coin-row">
+                <span class="coin-name">BNB</span>
+                <span class="coin-price">$586</span>
+                <span class="coin-change negative">▼1.84%</span>
+            </div>
+            <div class="coin-row">
+                <span class="coin-name">DOGE</span>
+                <span class="coin-price">$0.131</span>
+                <span class="coin-change negative">▼0.88%</span>
+            </div>
+        </div>
+        
+        <div class="features">
+            <div class="feature">
+                <span>📊</span>
+                <p>Live Charts</p>
+            </div>
+            <div class="feature">
+                <span>🔔</span>
+                <p>Price Alerts</p>
+            </div>
+            <div class="feature">
+                <span>💰</span>
+                <p>Portfolio</p>
+            </div>
+            <div class="feature">
+                <span>🤖</span>
+                <p>Bot Commands</p>
+            </div>
+        </div>
+        
+        <a href="https://t.me/Retracker_mohyen_bot" class="btn">🚀 Open Bot</a>
+        
+        <div class="footer">
+            <p>Powered by Render · Premium UI · Live Data</p>
+            <p style="margin-top: 10px;">⏰ Last Updated: <span id="timestamp"></span></p>
+        </div>
+    </div>
+
+    <script>
+        // Update timestamp
+        function updateTimestamp() {
+            const now = new Date();
+            const options = { 
+                hour: '2-digit', 
+                minute: '2-digit', 
+                second: '2-digit',
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            };
+            document.getElementById('timestamp').innerText = now.toLocaleString('en-IN', options);
+        }
+        updateTimestamp();
+        setInterval(updateTimestamp, 1000);
+        
+        // Simulate price updates
+        setInterval(() => {
+            const coins = document.querySelectorAll('.coin-row');
+            coins.forEach(coin => {
+                const priceSpan = coin.querySelector('.coin-price');
+                const changeSpan = coin.querySelector('.coin-change');
+                if (priceSpan && changeSpan) {
+                    let price = parseFloat(priceSpan.innerText.replace(/[$,]/g, ''));
+                    let change = parseFloat(changeSpan.innerText.replace(/[▲▼%]/g, ''));
+                    
+                    // Random price movement
+                    let movement = (Math.random() * 20) - 10;
+                    price += movement;
+                    price = Math.max(0, price);
+                    
+                    // Update display
+                    priceSpan.innerText = price < 1 ? '$' + price.toFixed(3) : '$' + price.toFixed(0);
+                    
+                    // Random change direction
+                    if (Math.random() > 0.5) {
+                        changeSpan.className = 'coin-change positive';
+                        changeSpan.innerText = '▲' + (Math.random() * 5).toFixed(2) + '%';
+                    } else {
+                        changeSpan.className = 'coin-change negative';
+                        changeSpan.innerText = '▼' + (Math.random() * 5).toFixed(2) + '%';
+                    }
+                }
+            });
+        }, 5000);
+    </script>
+</body>
+</html>
