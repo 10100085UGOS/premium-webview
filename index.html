@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Crypto WebView</title>
+    <title>Premium Crypto Tracker</title>
     <style>
         * {
             margin: 0;
@@ -11,197 +11,312 @@
             box-sizing: border-box;
         }
         body {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            background: radial-gradient(circle at 10% 20%, rgba(0, 163, 255, 0.2) 0%, rgba(0, 0, 0, 0.9) 90%);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 16px;
         }
-        .glass-card {
-            background: rgba(255,255,255,0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 30px;
-            padding: 40px;
-            max-width: 500px;
+        .card {
+            background: rgba(20, 30, 50, 0.7);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 40px;
+            padding: 30px;
+            max-width: 420px;
             width: 100%;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
             animation: float 6s ease-in-out infinite;
         }
         @keyframes float {
             0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
+            50% { transform: translateY(-8px); }
             100% { transform: translateY(0px); }
         }
-        h1 {
-            font-size: 2.5rem;
+        .header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .title {
+            font-size: 2.4rem;
             font-weight: 700;
-            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            background: linear-gradient(135deg, #fff, #a0b0ff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 20px;
+            margin-bottom: 8px;
         }
-        p {
-            color: #94a3b8;
-            line-height: 1.6;
-            margin-bottom: 30px;
+        .subtitle {
+            color: #a0b0c0;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
         }
-        .btn {
-            display: inline-block;
-            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-            color: white;
-            text-decoration: none;
-            padding: 12px 30px;
-            border-radius: 50px;
-            font-weight: 600;
-            transition: transform 0.3s, box-shadow 0.3s;
-            border: none;
-            cursor: pointer;
+        .price-panel {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 28px;
+            padding: 20px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
         }
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px -5px rgba(59,130,246,0.5);
-        }
-        .features {
-            display: grid;
-            grid-template-columns: repeat(2,1fr);
-            gap: 15px;
-            margin: 30px 0;
-        }
-        .feature {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 15px;
-            padding: 15px;
-            text-align: center;
-            transition: all 0.3s;
-        }
-        .feature:hover {
-            background: rgba(255,255,255,0.08);
-            transform: scale(1.05);
-        }
-        .feature span {
-            font-size: 2rem;
-            display: block;
-            margin-bottom: 5px;
-        }
-        .feature p {
-            margin: 0;
-            font-size: 0.9rem;
-            color: #cbd5e1;
-        }
-        .footer {
-            margin-top: 30px;
-            text-align: center;
-            color: #64748b;
-            font-size: 0.8rem;
-        }
-        .price-ticker {
-            background: rgba(0,0,0,0.3);
-            border-radius: 20px;
-            padding: 15px;
-            margin: 20px 0;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-        .coin-row {
+        .price-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 8px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            margin-bottom: 16px;
+            color: #90a0b0;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
-        .coin-row:last-child {
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .price-row:last-child {
             border-bottom: none;
+        }
+        .coin-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .coin-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 14px;
         }
         .coin-name {
             font-weight: 600;
-            color: #e2e8f0;
+            color: #e0e8ff;
+        }
+        .price-details {
+            text-align: right;
         }
         .coin-price {
-            color: #94a3b8;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 4px;
         }
         .coin-change {
-            font-weight: 500;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 20px;
+            display: inline-block;
         }
-        .positive {
+        .change-positive {
+            background: rgba(16, 185, 129, 0.15);
             color: #10b981;
         }
-        .negative {
+        .change-negative {
+            background: rgba(239, 68, 68, 0.15);
             color: #ef4444;
         }
-        .glow {
-            animation: glow 2s ease-in-out infinite;
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 28px;
         }
-        @keyframes glow {
-            0% { box-shadow: 0 0 5px rgba(59,130,246,0.2); }
-            50% { box-shadow: 0 0 20px rgba(59,130,246,0.4); }
-            100% { box-shadow: 0 0 5px rgba(59,130,246,0.2); }
+        .feature-item {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            border-radius: 24px;
+            padding: 16px 12px;
+            text-align: center;
+            transition: all 0.3s;
         }
-        @media (max-width: 480px) {
-            .glass-card { padding: 25px; }
-            h1 { font-size: 2rem; }
-            .features { grid-template-columns: 1fr; }
+        .feature-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: scale(1.02);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+        .feature-icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+            display: block;
+        }
+        .feature-title {
+            color: white;
+            font-weight: 600;
+            margin-bottom: 4px;
+            font-size: 1rem;
+        }
+        .feature-desc {
+            color: #90a0b0;
+            font-size: 0.75rem;
+        }
+        .button-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .main-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+            text-decoration: none;
+            padding: 16px 32px;
+            border-radius: 60px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+            box-shadow: 0 10px 20px -5px rgba(59,130,246,0.5);
+        }
+        .main-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px -5px rgba(59,130,246,0.7);
+        }
+        .footer {
+            text-align: center;
+            color: #607080;
+            font-size: 0.8rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding-top: 20px;
+        }
+        .live-badge {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ff6b6b;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+        @media (max-width: 400px) {
+            .card { padding: 20px; }
+            .title { font-size: 2rem; }
+            .features-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <div class="glass-card glow">
-        <h1>🚀 Premium Crypto</h1>
-        <p>Experience the ultimate crypto dashboard with real-time updates, beautiful charts, and seamless integration with our Telegram bot.</p>
-        
-        <div class="price-ticker">
-            <div class="coin-row">
-                <span class="coin-name">BTC</span>
-                <span class="coin-price">$64,165</span>
-                <span class="coin-change positive">▲0.87%</span>
+    <div class="card">
+        <div class="header">
+            <div class="title">CryptoView</div>
+            <div class="subtitle">Premium Dashboard</div>
+            <span class="live-badge" style="margin-top: 12px;">🔴 LIVE</span>
+        </div>
+
+        <div class="price-panel">
+            <div class="price-header">
+                <span>📊 Market Overview</span>
+                <span>24h Change</span>
             </div>
-            <div class="coin-row">
-                <span class="coin-name">ETH</span>
-                <span class="coin-price">$1,850</span>
-                <span class="coin-change negative">▼0.55%</span>
-            </div>
-            <div class="coin-row">
-                <span class="coin-name">BNB</span>
-                <span class="coin-price">$586</span>
-                <span class="coin-change negative">▼1.84%</span>
-            </div>
-            <div class="coin-row">
-                <span class="coin-name">DOGE</span>
-                <span class="coin-price">$0.131</span>
-                <span class="coin-change negative">▼0.88%</span>
+            <div id="price-container">
+                <!-- Prices will be populated by JavaScript -->
             </div>
         </div>
-        
-        <div class="features">
-            <div class="feature">
-                <span>📊</span>
-                <p>Live Charts</p>
+
+        <div class="features-grid">
+            <div class="feature-item">
+                <span class="feature-icon">📈</span>
+                <div class="feature-title">Real-time</div>
+                <div class="feature-desc">Live prices from Binance</div>
             </div>
-            <div class="feature">
-                <span>🔔</span>
-                <p>Price Alerts</p>
+            <div class="feature-item">
+                <span class="feature-icon">🔔</span>
+                <div class="feature-title">Alerts</div>
+                <div class="feature-desc">Price notifications</div>
             </div>
-            <div class="feature">
-                <span>💰</span>
-                <p>Portfolio</p>
+            <div class="feature-item">
+                <span class="feature-icon">📊</span>
+                <div class="feature-title">Charts</div>
+                <div class="feature-desc">Interactive graphs</div>
             </div>
-            <div class="feature">
-                <span>🤖</span>
-                <p>Bot Commands</p>
+            <div class="feature-item">
+                <span class="feature-icon">🤖</span>
+                <div class="feature-title">Bot</div>
+                <div class="feature-desc">Telegram integration</div>
             </div>
         </div>
-        
-        <a href="https://t.me/Retracker_mohyen_bot" class="btn">🚀 Open Bot</a>
-        
+
+        <div class="button-container">
+            <a href="https://t.me/Retracker_mohyen_bot" target="_blank" class="main-btn">
+                <span>🚀</span> OPEN TELEGRAM BOT <span>🤖</span>
+            </a>
+        </div>
+
         <div class="footer">
-            <p>Powered by Render · Premium UI · Live Data</p>
-            <p style="margin-top: 10px;">⏰ Last Updated: <span id="timestamp"></span></p>
+            <p>⏱️ Last updated: <span id="timestamp"></span></p>
+            <p style="margin-top: 8px;">Powered by Render • Premium UI</p>
         </div>
     </div>
 
     <script>
+        // Coin data
+        const coins = [
+            { name: 'BTC', symbol: 'BTCUSDT', icon: '₿', price: 64165.57, change: 0.87 },
+            { name: 'ETH', symbol: 'ETHUSDT', icon: 'Ξ', price: 1850.13, change: -0.55 },
+            { name: 'BNB', symbol: 'BNBUSDT', icon: 'BNB', price: 586.13, change: -1.84 },
+            { name: 'DOGE', symbol: 'DOGEUSDT', icon: 'Ð', price: 0.131, change: -0.88 }
+        ];
+
+        // Format price
+        function formatPrice(price) {
+            if (price < 1) return '$' + price.toFixed(4);
+            if (price < 1000) return '$' + price.toFixed(2);
+            return '$' + Math.round(price).toLocaleString();
+        }
+
+        // Render price rows
+        function renderPrices() {
+            const container = document.getElementById('price-container');
+            container.innerHTML = '';
+            coins.forEach(coin => {
+                const row = document.createElement('div');
+                row.className = 'price-row';
+                
+                const changeClass = coin.change >= 0 ? 'change-positive' : 'change-negative';
+                const changeSign = coin.change >= 0 ? '▲' : '▼';
+                
+                row.innerHTML = `
+                    <div class="coin-info">
+                        <div class="coin-icon">${coin.icon}</div>
+                        <span class="coin-name">${coin.name}</span>
+                    </div>
+                    <div class="price-details">
+                        <div class="coin-price">${formatPrice(coin.price)}</div>
+                        <div class="coin-change ${changeClass}">${changeSign} ${Math.abs(coin.change).toFixed(2)}%</div>
+                    </div>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        // Simulate price updates
+        function updatePrices() {
+            coins.forEach(coin => {
+                // Random price movement
+                let movement = (Math.random() * 60) - 30;
+                coin.price += movement;
+                if (coin.price < 0) coin.price = Math.abs(coin.price);
+                
+                // Random change direction
+                coin.change = (Math.random() * 3) - 1.5;
+            });
+            renderPrices();
+        }
+
         // Update timestamp
         function updateTimestamp() {
             const now = new Date();
@@ -209,44 +324,23 @@
                 hour: '2-digit', 
                 minute: '2-digit', 
                 second: '2-digit',
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric'
+                hour12: true
             };
-            document.getElementById('timestamp').innerText = now.toLocaleString('en-IN', options);
+            document.getElementById('timestamp').innerText = now.toLocaleTimeString('en-US', options);
         }
+
+        // Initial render
+        renderPrices();
         updateTimestamp();
+
+        // Update every 5 seconds
+        setInterval(updatePrices, 5000);
         setInterval(updateTimestamp, 1000);
-        
-        // Simulate price updates
-        setInterval(() => {
-            const coins = document.querySelectorAll('.coin-row');
-            coins.forEach(coin => {
-                const priceSpan = coin.querySelector('.coin-price');
-                const changeSpan = coin.querySelector('.coin-change');
-                if (priceSpan && changeSpan) {
-                    let price = parseFloat(priceSpan.innerText.replace(/[$,]/g, ''));
-                    let change = parseFloat(changeSpan.innerText.replace(/[▲▼%]/g, ''));
-                    
-                    // Random price movement
-                    let movement = (Math.random() * 20) - 10;
-                    price += movement;
-                    price = Math.max(0, price);
-                    
-                    // Update display
-                    priceSpan.innerText = price < 1 ? '$' + price.toFixed(3) : '$' + price.toFixed(0);
-                    
-                    // Random change direction
-                    if (Math.random() > 0.5) {
-                        changeSpan.className = 'coin-change positive';
-                        changeSpan.innerText = '▲' + (Math.random() * 5).toFixed(2) + '%';
-                    } else {
-                        changeSpan.className = 'coin-change negative';
-                        changeSpan.innerText = '▼' + (Math.random() * 5).toFixed(2) + '%';
-                    }
-                }
-            });
-        }, 5000);
+
+        // Button click tracking (optional)
+        document.querySelector('.main-btn').addEventListener('click', function() {
+            console.log('Bot button clicked');
+        });
     </script>
 </body>
 </html>
