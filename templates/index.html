@@ -1,47 +1,524 @@
-{% extends "base.html" %}
-{% block title %}Login - Crypto Dashboard{% endblock %}
-{% block content %}
-<div class="glass-card">
-    <h1 class="title">🚀 Premium Crypto</h1>
-    <p class="subtitle">Access advanced charts and real-time data</p>
-    
-    <div class="login-options">
-        <div id="telegram-login"></div>
-        
-        <div id="g_id_onload"
-             data-client_id="{{ GOOGLE_CLIENT_ID }}"
-             data-context="signin"
-             data-ux_mode="popup"
-             data-callback="handleGoogleCredential"
-             data-auto_prompt="false">
-        </div>
-        <div class="g_id_signin" data-type="standard"></div>
-        
-        <div class="divider">OR</div>
-        
-        <a href="{{ url_for('login_page') }}" class="btn-secondary">Login with Username</a>
-        <a href="{{ url_for('register') }}" class="btn-secondary">Register</a>
-    </div>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✦ CRYPTOVERSE • Premium UI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Courier New', monospace;
+        }
 
-<script>
-function onTelegramAuth(user) {
-    fetch('/telegram-login', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(user)
-    }).then(res => res.json()).then(data => {
-        if (data.success) window.location.href = "{{ url_for('dashboard') }}";
-    });
-}
-function handleGoogleCredential(response) {
-    fetch('/google-login', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({credential: response.credential})
-    }).then(res => res.json()).then(data => {
-        if (data.success) window.location.href = "{{ url_for('dashboard') }}";
-    });
-}
-</script>
-{% endblock %}
+        body {
+            background: #0a0c10;
+            color: #e0e5ec;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Main glass card */
+        .main-card {
+            max-width: 1200px;
+            width: 100%;
+            background: rgba(20, 28, 40, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 48px;
+            padding: 32px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
+            position: relative;
+        }
+
+        /* Header with settings */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff, #00ffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .settings-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 60px;
+            padding: 12px 24px;
+            font-size: 1rem;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        .settings-btn:hover {
+            border-color: #00ffff;
+            box-shadow: 0 0 20px #00ffff33;
+        }
+
+        /* Stats cards (like screenshot) */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-bottom: 60px;
+        }
+
+        .stat-card {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            border-radius: 40px;
+            padding: 32px 24px;
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        .stat-card:hover {
+            border-color: #00ffff33;
+        }
+
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff, #00ffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            color: #7f8fa3;
+            font-size: 1rem;
+            text-transform: uppercase;
+        }
+
+        /* Market cap section */
+        .market-section {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 40px;
+            padding: 32px;
+            margin-bottom: 40px;
+        }
+
+        .market-header {
+            display: flex;
+            justify-content: space-between;
+            color: #7f8fa3;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+        }
+
+        .coin-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .coin-row:last-child {
+            border-bottom: none;
+        }
+
+        .coin-name { font-weight: 700; color: white; }
+        .coin-price { color: #b0c4de; }
+        .coin-change { font-weight: 600; }
+        .positive { color: #00ffaa; }
+        .negative { color: #ff4d4d; }
+
+        /* Bitcoin chart */
+        .chart-container {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 40px;
+            padding: 32px;
+            margin-bottom: 40px;
+        }
+
+        .chart-title {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .chart-placeholder {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .chart-line {
+            height: 2px;
+            background: linear-gradient(90deg, #00ffff, #ff00ff);
+            width: 100%;
+            margin: 20px 0;
+        }
+
+        .chart-labels {
+            display: flex;
+            justify-content: space-between;
+            color: #7f8fa3;
+            font-size: 0.8rem;
+        }
+
+        .y-axis {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 200px;
+            float: left;
+            margin-right: 20px;
+            color: #7f8fa3;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            color: #5a6a7a;
+            font-size: 0.8rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding-top: 24px;
+        }
+
+        /* Floating file button */
+        .floating-file-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(0, 255, 255, 0.2);
+            backdrop-filter: blur(15px);
+            border: 1px solid #00ffff;
+            border-radius: 60px;
+            padding: 18px 30px;
+            color: white;
+            font-weight: 700;
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 100;
+            box-shadow: 0 0 30px #00ffff33;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .floating-file-btn:hover {
+            background: rgba(0, 255, 255, 0.4);
+            box-shadow: 0 0 50px #00ffff;
+            transform: scale(1.05);
+        }
+
+        /* Navigation menu */
+        .nav-menu {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            background: rgba(10, 15, 25, 0.98);
+            backdrop-filter: blur(20px);
+            border: 1px solid #00ffff33;
+            border-radius: 30px;
+            padding: 20px;
+            width: 280px;
+            z-index: 99;
+            display: none;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+        }
+
+        .nav-menu.active { display: block; }
+
+        .nav-item {
+            padding: 15px 20px;
+            margin: 5px 0;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+            color: white;
+            font-weight: 500;
+        }
+
+        .nav-item:hover {
+            background: rgba(0, 255, 255, 0.1);
+        }
+
+        /* Settings panel */
+        .settings-panel {
+            position: fixed;
+            top: 0;
+            left: -400px;
+            width: 350px;
+            height: 100vh;
+            background: rgba(5, 10, 20, 0.98);
+            backdrop-filter: blur(30px);
+            border-right: 1px solid #00ffff33;
+            z-index: 200;
+            transition: 0.3s;
+            padding: 40px 20px;
+        }
+
+        .settings-panel.active { left: 0; }
+
+        .settings-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Hack response page */
+        .hack-response {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0a0c10;
+            z-index: 300;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .hack-response.active { display: flex; }
+
+        .hack-card {
+            background: #0f0f0f;
+            border: 2px solid #00ff00;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            box-shadow: 0 0 50px #00ff00;
+        }
+
+        .hack-title {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #00ff00;
+            padding-bottom: 10px;
+        }
+
+        .hack-data {
+            background: #000;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            line-height: 1.8;
+        }
+
+        .hack-close {
+            background: transparent;
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            padding: 12px 30px;
+            border-radius: 60px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+        }
+
+        .hack-close:hover {
+            background: #00ff00;
+            color: black;
+        }
+
+        /* Overlay */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 150;
+            display: none;
+        }
+        .overlay.active { display: block; }
+    </style>
+</head>
+<body>
+
+    <!-- Main Card -->
+    <div class="main-card">
+        <!-- Header with Settings -->
+        <div class="header">
+            <div class="logo">✦ CRYPTOVERSE</div>
+            <button class="settings-btn" onclick="openSettings()">
+                ⚙️ SETTINGS
+            </button>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">500+</div>
+                <div class="stat-label">COINS</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">$2.68T+</div>
+                <div class="stat-label">MARKET CAP</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">24/7</div>
+                <div class="stat-label">SERVICES</div>
+            </div>
+        </div>
+
+        <!-- Market Cap List -->
+        <div class="market-section">
+            <div class="market-header">
+                <span>Market Cap</span>
+                <span>Price / 24h %</span>
+            </div>
+            <div class="coin-row">
+                <span class="coin-name">BTC</span>
+                <span class="coin-price">$64,165.57</span>
+                <span class="coin-change negative">▼0.87%</span>
+            </div>
+            <div class="coin-row">
+                <span class="coin-name">ETH</span>
+                <span class="coin-price">$1,850.13</span>
+                <span class="coin-change negative">▼0.55%</span>
+            </div>
+            <div class="coin-row">
+                <span class="coin-name">BNB</span>
+                <span class="coin-price">$586.13</span>
+                <span class="coin-change negative">▼1.84%</span>
+            </div>
+        </div>
+
+        <!-- Bitcoin Chart -->
+        <div class="chart-container">
+            <div class="chart-title">📈 Bitcoin 7d Chart</div>
+            <div style="display: flex;">
+                <div class="y-axis">
+                    <span>68k</span>
+                    <span>66k</span>
+                    <span>64k</span>
+                </div>
+                <div style="flex:1;">
+                    <div class="chart-line"></div>
+                    <div class="chart-labels">
+                        <span>19/2</span><span>20/2</span><span>21/2</span><span>22/2</span><span>23/2</span><span>24/2</span><span>25/2</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>🔴 Last Updated: 21:41:36</p>
+            <p>Powered by Binance & CoinCap • Premium UI</p>
+        </div>
+    </div>
+
+    <!-- Floating File Button -->
+    <button class="floating-file-btn" onclick="toggleNav()">
+        📁 FILES
+    </button>
+
+    <!-- Navigation Menu -->
+    <div class="nav-menu" id="navMenu">
+        <div class="nav-item" onclick="alert('Cryptos Page')">🪙 Cryptos</div>
+        <div class="nav-item" onclick="alert('Balance: 0 ReCOIN')">💰 Balance</div>
+        <div class="nav-item" onclick="alert('Website Info')">🌐 Website Info</div>
+        <div class="nav-item" onclick="openHackResponse()">🔗 Hack Link Gernet</div>
+        <div class="nav-item" onclick="alert('Response from link')">📡 Response</div>
+        <div class="nav-item" onclick="alert('Subscription Plans')">💎 Subscription</div>
+        <div class="nav-item" onclick="alert('Create Account')">📝 Create Account</div>
+    </div>
+
+    <!-- Settings Panel -->
+    <div class="settings-panel" id="settingsPanel">
+        <button class="settings-close" onclick="closeSettings()">✖</button>
+        <h2 style="color:white; margin-bottom:30px;">⚙️ Settings</h2>
+        <div class="nav-item" onclick="alert('Profile Settings')">👤 Profile</div>
+        <div class="nav-item" onclick="alert('Subscription')">💎 Subscription</div>
+        <div class="nav-item" onclick="alert('Create Account')">📝 Create Account</div>
+        <div class="nav-item" onclick="alert('Security')">🔒 Security</div>
+        <div class="nav-item" onclick="alert('Language')">🌐 Language</div>
+    </div>
+
+    <!-- Hack Response Page -->
+    <div class="hack-response" id="hackResponse">
+        <div class="hack-card">
+            <div class="hack-title">🔓 LINK DATA</div>
+            <div class="hack-data">
+                <p>IP: 192.168.1.45 (Mumbai, India)</p>
+                <p>Device: Samsung Galaxy S23</p>
+                <p>Browser: Chrome 122</p>
+                <p>Battery: 67%</p>
+                <p>Camera: Available</p>
+                <p>Clipboard: "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh"</p>
+                <p>Location: 19.0760° N, 72.8777° E</p>
+                <p>Network: Jio 5G</p>
+            </div>
+            <button class="hack-close" onclick="closeHackResponse()">CLOSE</button>
+        </div>
+    </div>
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay" onclick="closeAll()"></div>
+
+    <script>
+        function openSettings() {
+            document.getElementById('settingsPanel').classList.add('active');
+            document.getElementById('overlay').classList.add('active');
+        }
+
+        function closeSettings() {
+            document.getElementById('settingsPanel').classList.remove('active');
+            document.getElementById('overlay').classList.remove('active');
+        }
+
+        function toggleNav() {
+            document.getElementById('navMenu').classList.toggle('active');
+            document.getElementById('overlay').classList.toggle('active');
+        }
+
+        function openHackResponse() {
+            document.getElementById('hackResponse').classList.add('active');
+            document.getElementById('overlay').classList.add('active');
+            document.getElementById('navMenu').classList.remove('active');
+        }
+
+        function closeHackResponse() {
+            document.getElementById('hackResponse').classList.remove('active');
+            document.getElementById('overlay').classList.remove('active');
+        }
+
+        function closeAll() {
+            document.getElementById('settingsPanel').classList.remove('active');
+            document.getElementById('navMenu').classList.remove('active');
+            document.getElementById('hackResponse').classList.remove('active');
+            w;
+        }
+    </script>
+</body>
+</htm>
