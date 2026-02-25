@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Login - Crypto Dashboard{% endblock %}
+{% block content %}
+<div class="glass-card">
+    <h1 class="title">🚀 Premium Crypto</h1>
+    <p class="subtitle">Access advanced charts and real-time data</p>
+    
+    <div class="login-options">
+        <div id="telegram-login"></div>
+        
+        <div id="g_id_onload"
+             data-client_id="{{ GOOGLE_CLIENT_ID }}"
+             data-context="signin"
+             data-ux_mode="popup"
+             data-callback="handleGoogleCredential"
+             data-auto_prompt="false">
+        </div>
+        <div class="g_id_signin" data-type="standard"></div>
+        
+        <div class="divider">OR</div>
+        
+        <a href="{{ url_for('login_page') }}" class="btn-secondary">Login with Username</a>
+        <a href="{{ url_for('register') }}" class="btn-secondary">Register</a>
+    </div>
+</div>
+
+<script>
+function onTelegramAuth(user) {
+    fetch('/telegram-login', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(user)
+    }).then(res => res.json()).then(data => {
+        if (data.success) window.location.href = "{{ url_for('dashboard') }}";
+    });
+}
+function handleGoogleCredential(response) {
+    fetch('/google-login', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({credential: response.credential})
+    }).then(res => res.json()).then(data => {
+        if (data.success) window.location.href = "{{ url_for('dashboard') }}";
+    });
+}
+</script>
+{% endblock %}
