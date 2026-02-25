@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="glass-card">
+    <div class="header">
+        <h1>📊 Market Cap</h1>
+        <div class="user-info">
+            <span>Welcome, {{ user.username }}</span>
+            <span>🪙 ReCOIN: <span id="recoin-balance">{{ user.recoin }}</span></span>
+            <a href="{{ url_for('logout') }}" class="logout">Logout</a>
+        </div>
+    </div>
+
+    <div class="market-list" id="market-list">
+        <!-- Filled by JS -->
+    </div>
+
+    <div class="chart-section">
+        <h2>📈 Bitcoin 7d Chart</h2>
+        <canvas id="btcChart"></canvas>
+    </div>
+
+    <div class="footer">
+        <p>⏰ Last Updated: <span id="timestamp"></span></p>
+        <p>Powered by Binance & CoinCap • Premium UI</p>
+    </div>
+</div>
+
+<script>
+function formatMarketCap(cap) {
+    let c = parseFloat(cap);
+    if (c >= 1e12) return `$${(c/1e12).toFixed(2)}T`;
+    if (c >= 1e9) return `$${(c/1e9).toFixed(2)}B`;
+    if (c >= 1e6) return `$${(c/1e6).toFixed(2)}M`;
+    return `$${c.toFixed(0)}`;
+}
+function formatPrice(price) {
+    let p = parseFloat(price);
+    if (p < 1) return `$${p.toFixed(4)}`;
+    if (p < 1000) return `$${p.toFixed(2)}`;
+    return `$${Math.round(p).toLocaleString()}`;
+}
+async function fetchMarketData() {
+    const res = await fetch('/api/crypto');
+    const data = await res.json();
+    const container = document.getElementById('market-list');
+    container.innerHTML = '';
+    data.forEach(coin => {
+        const change = parseFloat(coin.changePercent24Hr);
+        const changeClass = change >= 0 ? 'positive' : 'negative';
+        const arrow = change >= 0 ? '▲' : '▼';
+        container.innerHTML += `
+            <div class="coin-row">
+                <span class="coin-name">${coin.symbol}</span>
+                <span class="coin-cap">${formatMarketCap(coin.marketCapUsd)}</span>
+                <span class="coin-price">${formatPrice(coin.priceUsd)}</span>
+                <span class="coin-change ${changeClass}">${arrow} ${Math.abs(change).toFixed(2)}%</span>
+            </div>
+        `;
+    });
+    document.getElementById('timestamp').innerText = new Date().toLocaleTimeString('en-IN', {hour12: false});
+}
+fetchMarketData();
+setInterval(fetchMarketData, 10000);
+
+fetch('https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1d&limit=7')
+    .then(res => res.json())
+    .then(data => {
+        const ctx = document.getElementById('btcChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: data.map(k => {
+                    const d = new Date(k[0]);
+                    return `${d.getDate()}/${d.getMonth()+1}`;
+                }),
+                datasets: [{
+                    label: 'BTC Price (USD)',
+                    data: data.map(k => parseFloat(k[4])),
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'rgba(59,130,246,0.1)',
+                    borderWidth: 3,
+                    pointBackgroundColor: '#3b82f6',
+                    pointBorderColor: 'white',
+                    pointRadius: 4,
+                    tension: 0.2,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: { y: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } } }
+            }
+        });
+    });
+</script>
+{% endblock %}
